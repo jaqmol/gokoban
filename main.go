@@ -5,6 +5,8 @@
 package main
 
 import (
+	"go/build"
+
 	"github.com/g3n/engine/audio"
 	"github.com/g3n/engine/audio/al"
 	"github.com/g3n/engine/audio/vorbis"
@@ -24,14 +26,15 @@ import (
 
 	"flag"
 	"fmt"
-	"github.com/g3n/engine/geometry"
 	"io/ioutil"
+	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
-	"time"
-	"os"
 	"strings"
-	"path/filepath"
+	"time"
+
+	"github.com/g3n/engine/geometry"
 )
 
 //      ____       _         _
@@ -323,7 +326,7 @@ func (g *GokobanGame) GameCompleted() {
 		g.musicPlayer.Stop()
 		g.PlaySound(g.gameCompletePlayer, nil)
 	}
-	g.titleImage.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/title3_completed.png")
+	g.titleImage.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/title3_completed.png")
 }
 
 // InitLevel initializes the level associated to the provided index
@@ -336,10 +339,10 @@ func (g *GokobanGame) InitLevel(n int) {
 	// The button to go to the next level has 3 different states: disabled, locked and enabled
 	// If this is the very last level - disable it completely
 	if n == len(g.levels)-1 {
-		g.nextButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/right_disabled2.png")
+		g.nextButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/right_disabled2.png")
 		g.nextButton.SetEnabled(false)
 	} else {
-		g.nextButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/right_disabled_locked.png")
+		g.nextButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/right_disabled_locked.png")
 		// check last completed level
 		if g.userData.LastUnlockedLevel == n {
 			g.nextButton.SetEnabled(false)
@@ -559,7 +562,7 @@ func (g *GokobanGame) LoadGopher() {
 	log.Debug("Decoding gopher model...")
 
 	// Decode model in OBJ format
-	dec, err := obj.Decode(g.dataDir + "/gopher/gopher.obj", g.dataDir + "/gopher/gopher.mtl")
+	dec, err := obj.Decode(g.dataDir+"/gopher/gopher.obj", g.dataDir+"/gopher/gopher.mtl")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -726,15 +729,15 @@ func (g *GokobanGame) CreateArrowNode() {
 
 func (g *GokobanGame) UpdateMusicButton(on bool) {
 	if on {
-		g.musicButton.SetImage(gui.ButtonNormal, g.dataDir + "/gui/music_normal.png")
-		g.musicButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/music_hover.png")
-		g.musicButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/music_click.png")
+		g.musicButton.SetImage(gui.ButtonNormal, g.dataDir+"/gui/music_normal.png")
+		g.musicButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/music_hover.png")
+		g.musicButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/music_click.png")
 		g.musicSlider.SetEnabled(true)
 		g.musicSlider.SetValue(g.musicSlider.Value())
 	} else {
-		g.musicButton.SetImage(gui.ButtonNormal, g.dataDir + "/gui/music_normal_off.png")
-		g.musicButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/music_hover_off.png")
-		g.musicButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/music_click_off.png")
+		g.musicButton.SetImage(gui.ButtonNormal, g.dataDir+"/gui/music_normal_off.png")
+		g.musicButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/music_hover_off.png")
+		g.musicButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/music_click_off.png")
 		g.musicSlider.SetEnabled(false)
 		g.SetMusicVolume(0)
 	}
@@ -742,15 +745,15 @@ func (g *GokobanGame) UpdateMusicButton(on bool) {
 
 func (g *GokobanGame) UpdateSfxButton(on bool) {
 	if on {
-		g.sfxButton.SetImage(gui.ButtonNormal, g.dataDir + "/gui/sound_normal.png")
-		g.sfxButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/sound_hover.png")
-		g.sfxButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/sound_click.png")
+		g.sfxButton.SetImage(gui.ButtonNormal, g.dataDir+"/gui/sound_normal.png")
+		g.sfxButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/sound_hover.png")
+		g.sfxButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/sound_click.png")
 		g.sfxSlider.SetEnabled(true)
 		g.sfxSlider.SetValue(g.sfxSlider.Value())
 	} else {
-		g.sfxButton.SetImage(gui.ButtonNormal, g.dataDir + "/gui/sound_normal_off.png")
-		g.sfxButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/sound_hover_off.png")
-		g.sfxButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/sound_click_off.png")
+		g.sfxButton.SetImage(gui.ButtonNormal, g.dataDir+"/gui/sound_normal_off.png")
+		g.sfxButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/sound_hover_off.png")
+		g.sfxButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/sound_click_off.png")
 		g.sfxSlider.SetEnabled(false)
 		g.SetSfxVolume(0)
 	}
@@ -828,9 +831,9 @@ func (g *GokobanGame) SetupGui(width, height int) {
 
 	// Previous Level Button
 	g.prevButton, err = gui.NewImageButton(g.dataDir + "/gui/left_normal.png")
-	g.prevButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/left_hover.png")
-	g.prevButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/left_click.png")
-	g.prevButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/left_disabled2.png")
+	g.prevButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/left_hover.png")
+	g.prevButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/left_click.png")
+	g.prevButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/left_disabled2.png")
 	if err != nil {
 		panic(err)
 	}
@@ -849,7 +852,7 @@ func (g *GokobanGame) SetupGui(width, height int) {
 
 	// Level Number Label
 	g.levelLabel, err = gui.NewImageButton(g.dataDir + "/gui/panel.png")
-	g.levelLabel.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/panel.png")
+	g.levelLabel.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/panel.png")
 	g.levelLabel.SetColor(&math32.Color{0.8, 0.8, 0.8})
 	g.levelLabel.SetText("Level")
 	g.levelLabel.SetFontSize(35)
@@ -862,9 +865,9 @@ func (g *GokobanGame) SetupGui(width, height int) {
 
 	// Next Level Button
 	g.nextButton, err = gui.NewImageButton(g.dataDir + "/gui/right_normal.png")
-	g.nextButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/right_hover.png")
-	g.nextButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/right_click.png")
-	g.nextButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/right_disabled2.png")
+	g.nextButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/right_hover.png")
+	g.nextButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/right_click.png")
+	g.nextButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/right_disabled2.png")
 	if err != nil {
 		panic(err)
 	}
@@ -889,9 +892,9 @@ func (g *GokobanGame) SetupGui(width, height int) {
 
 	// Restart Level Button
 	g.restartButton, err = gui.NewImageButton(g.dataDir + "/gui/restart_normal.png")
-	g.restartButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/restart_hover.png")
-	g.restartButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/restart_click.png")
-	g.restartButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/restart_disabled2.png")
+	g.restartButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/restart_hover.png")
+	g.restartButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/restart_click.png")
+	g.restartButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/restart_disabled2.png")
 	if err != nil {
 		panic(err)
 	}
@@ -907,9 +910,9 @@ func (g *GokobanGame) SetupGui(width, height int) {
 
 	// Restart Level Button
 	g.menuButton, err = gui.NewImageButton(g.dataDir + "/gui/menu_normal.png")
-	g.menuButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/menu_hover.png")
-	g.menuButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/menu_click.png")
-	g.menuButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/menu_disabled2.png")
+	g.menuButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/menu_hover.png")
+	g.menuButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/menu_click.png")
+	g.menuButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/menu_disabled2.png")
 	if err != nil {
 		panic(err)
 	}
@@ -925,7 +928,7 @@ func (g *GokobanGame) SetupGui(width, height int) {
 
 	// Title
 	g.titleImage, err = gui.NewImageButton(g.dataDir + "/gui/title3.png")
-	g.titleImage.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/title3.png")
+	g.titleImage.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/title3.png")
 	g.titleImage.SetEnabled(false)
 	g.root.Subscribe(gui.OnResize, func(evname string, ev interface{}) {
 		g.titleImage.SetPositionX((g.root.ContentWidth() - g.titleImage.ContentWidth()) / 2)
@@ -1012,9 +1015,9 @@ func (g *GokobanGame) SetupGui(width, height int) {
 	musicControl.SetLayout(topRowLayout)
 
 	g.musicButton, err = gui.NewImageButton(g.dataDir + "/gui/music_normal.png")
-	g.musicButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/music_hover.png")
-	g.musicButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/music_click.png")
-	g.musicButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/music_disabled2.png")
+	g.musicButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/music_hover.png")
+	g.musicButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/music_click.png")
+	g.musicButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/music_disabled2.png")
 	if err != nil {
 		panic(err)
 	}
@@ -1043,9 +1046,9 @@ func (g *GokobanGame) SetupGui(width, height int) {
 	sfxControl.SetLayout(topRowLayout)
 
 	g.sfxButton, err = gui.NewImageButton(g.dataDir + "/gui/sound_normal.png")
-	g.sfxButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/sound_hover.png")
-	g.sfxButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/sound_click.png")
-	g.sfxButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/sound_disabled2.png")
+	g.sfxButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/sound_hover.png")
+	g.sfxButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/sound_click.png")
+	g.sfxButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/sound_disabled2.png")
 	if err != nil {
 		panic(err)
 	}
@@ -1071,9 +1074,9 @@ func (g *GokobanGame) SetupGui(width, height int) {
 
 	// FullScreen Button
 	g.fullScreenButton, err = gui.NewImageButton(g.dataDir + "/gui/screen_normal.png")
-	g.fullScreenButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/screen_hover.png")
-	g.fullScreenButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/screen_click.png")
-	g.fullScreenButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/screen_disabled2.png")
+	g.fullScreenButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/screen_hover.png")
+	g.fullScreenButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/screen_click.png")
+	g.fullScreenButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/screen_disabled2.png")
 	if err != nil {
 		panic(err)
 	}
@@ -1093,9 +1096,9 @@ func (g *GokobanGame) SetupGui(width, height int) {
 
 	// Quit Button
 	g.quitButton, err = gui.NewImageButton(g.dataDir + "/gui/quit_normal.png")
-	g.quitButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/quit_hover.png")
-	g.quitButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/quit_click.png")
-	g.quitButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/quit_disabled2.png")
+	g.quitButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/quit_hover.png")
+	g.quitButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/quit_click.png")
+	g.quitButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/quit_disabled2.png")
 	if err != nil {
 		panic(err)
 	}
@@ -1107,9 +1110,9 @@ func (g *GokobanGame) SetupGui(width, height int) {
 
 	// Play Button
 	g.playButton, err = gui.NewImageButton(g.dataDir + "/gui/play_normal.png")
-	g.playButton.SetImage(gui.ButtonOver, g.dataDir + "/gui/play_hover.png")
-	g.playButton.SetImage(gui.ButtonPressed, g.dataDir + "/gui/play_click.png")
-	g.playButton.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/play_disabled2.png")
+	g.playButton.SetImage(gui.ButtonOver, g.dataDir+"/gui/play_hover.png")
+	g.playButton.SetImage(gui.ButtonPressed, g.dataDir+"/gui/play_click.png")
+	g.playButton.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/play_disabled2.png")
 	if err != nil {
 		panic(err)
 	}
@@ -1219,6 +1222,10 @@ func main() {
 
 	// Manually scan the $GOPATH directories to find the data directory
 	rawPaths := os.Getenv("GOPATH")
+	if rawPaths == "" {
+		// Build default gopath
+		rawPaths = build.Default.GOPATH
+	}
 	paths := strings.Split(rawPaths, ":")
 	for _, j := range paths {
 		// Checks data path
@@ -1349,7 +1356,7 @@ func main() {
 	g.win.Subscribe(window.OnCursor, g.onCursor)
 
 	if g.userData.LastUnlockedLevel == len(g.levels) {
-		g.titleImage.SetImage(gui.ButtonDisabled, g.dataDir + "/gui/title3_completed.png")
+		g.titleImage.SetImage(gui.ButtonDisabled, g.dataDir+"/gui/title3_completed.png")
 	}
 
 	// Done Loading - hide the loading label, show the menu, and initialize the level
